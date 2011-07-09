@@ -32,7 +32,7 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
         """Activate plugin."""
 
         self.doc = self.view.get_buffer()
-        self.handler_id = self.doc.connect("saving", self.on_document_saving)
+        self.handler_id = self.doc.connect("save", self.on_document_saving)
 
     def do_deactivate(self):
         """Deactivate plugin."""
