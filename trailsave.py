@@ -61,8 +61,6 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
     def save_position(self):
         """Save the cursor/scroll position"""
 
-        self.scroll = self.view.get_vadjustment()
-
         cursor = self.doc.get_iter_at_mark(self.doc.get_insert())
 
         self.cursor_line        = cursor.get_line()
@@ -83,5 +81,5 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
         cursor = self.doc.get_iter_at_line_offset(self.cursor_line, self.cursor_line_offset)
         self.doc.place_cursor(cursor)
 
-        # FIXME: This doesn't actually work
-        self.view.set_vadjustment(self.scroll)
+        mark = self.doc.create_mark(None, cursor, True)
+        self.view.scroll_to_mark(mark, 0, False, 0, 0)
