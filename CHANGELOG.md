@@ -1,3 +1,8 @@
+Version 3.1.1
+-------------
+
+Fix bad bug which could result in non-whitespace text being deleted.
+
 Version 3.1.0
 -------------
 
