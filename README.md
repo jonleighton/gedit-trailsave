@@ -8,7 +8,7 @@ This will not work on Gedit 2. You can download the Gedit 2 version here: http:/
 * Authors:
   * Osmo Salomaa wrote original Gedit 2 plugin
   * Jon Leighton ported to Gedit 3
-* Version: 3.0.0
+* Version: 3.1.0
 
 Installation
 ------------

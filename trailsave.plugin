@@ -7,4 +7,4 @@ Description=Strip trailing whitespace on save
 Authors=Osmo Salomaa <otsaloma@cc.hut.fi>, Jon Leighton <j@jonathanleighton.com>
 Copyright=Copyright (C) 2006-2011 Osmo Salomaa & Jon Leighton
 Website=http://github.com/jonleighton/gedit-trailsave
-Version=3.0.0
+Version=3.1.0
