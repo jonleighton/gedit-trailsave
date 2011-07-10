@@ -1,3 +1,8 @@
+Version 3.1.2
+-------------
+
+Proper handling of multibyte characters.
+
 Version 3.1.1
 -------------
 
