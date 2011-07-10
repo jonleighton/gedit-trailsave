@@ -46,40 +46,53 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
     def on_document_saving(self, *args):
         """Strip trailing spaces in document."""
 
-        self.save_position()
         self.doc.begin_user_action()
+        self.strip_trailing_spaces()
+        self.strip_eof_newlines()
+        self.doc.end_user_action()
+
+    def strip_trailing_spaces(self):
+        """
+        Pull the buffer into a Python string and then work out which parts we need to delete
+        using regular expressions. This is signficiantly faster than just iterating through.
+        """
 
         text = self.doc.get_text(self.doc.get_start_iter(), self.doc.get_end_iter(), False)
-        text = re.sub('[ \t]*$', '', text, flags=re.MULTILINE)
-        text = re.sub('\n+$', '', text)
 
-        self.doc.set_text(text, len(text))
+        start_iter = self.doc.get_start_iter()
+        end_iter   = self.doc.get_start_iter()
 
-        self.doc.end_user_action()
-        self.restore_position()
+        line_no        = 0 # Last matched line no
+        last_match_pos = 0 # Last matched position in the string
 
-    def save_position(self):
-        """Save the cursor/scroll position"""
+        for match in re.finditer('.*?([ \t]+)$', text, flags=re.MULTILINE):
+            # Count the newlines since the last match
+            line_no += text.count('\n', last_match_pos, match.start())
 
-        cursor = self.doc.get_iter_at_mark(self.doc.get_insert())
+            # Work out the offsets within the line
+            whitespace_start = match.start(1) - match.start()
+            whitespace_end   = match.end(1) - match.start(1)
 
-        self.cursor_line        = cursor.get_line()
-        self.cursor_line_offset = cursor.get_line_offset()
+            # Update the iterators and do the deletion
+            start_iter.set_line(line_no)
+            start_iter.set_line_offset(whitespace_start)
 
-    def restore_position(self):
-        """Restore the cursor/scroll position"""
+            end_iter.set_line(line_no)
+            end_iter.set_line_offset(whitespace_end)
 
-        end_iter         = self.doc.get_end_iter()
-        self.cursor_line = min(self.cursor_line, end_iter.get_line())
+            self.doc.delete(start_iter, end_iter)
 
-        cursor_line_iter        = self.doc.get_iter_at_line(self.cursor_line)
-        self.cursor_line_offset = min(
-          self.cursor_line_offset,
-          max(cursor_line_iter.get_chars_in_line() - 1, 0)
-        )
+            # Update the last match position
+            last_match_pos = match.end()
 
-        cursor = self.doc.get_iter_at_line_offset(self.cursor_line, self.cursor_line_offset)
-        self.doc.place_cursor(cursor)
+    def strip_eof_newlines(self):
+        """Strip empty lines at the end of the file"""
 
-        mark = self.doc.create_mark(None, cursor, True)
-        self.view.scroll_to_mark(mark, 0, False, 0, 0)
+        itr = self.doc.get_end_iter()
+
+        if itr.starts_line():
+            while itr.backward_char():
+                if not itr.ends_line():
+                    itr.forward_to_line_end()
+                    break
+            self.doc.delete(itr, self.doc.get_end_iter())
