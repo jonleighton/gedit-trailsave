@@ -71,7 +71,7 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
 
             # Work out the offsets within the line
             whitespace_start = match.start(1) - match.start()
-            whitespace_end   = match.end(1) - match.start(1)
+            whitespace_end   = match.end(1) - match.start()
 
             # Update the iterators and do the deletion
             start_iter.set_line(line_no)
