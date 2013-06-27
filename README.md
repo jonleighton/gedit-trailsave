@@ -1,3 +1,5 @@
+**I am no longer maintaining this project. Please contact me if you'd like to take over.**
+
 Gedit Trailsave
 ---------------
 
