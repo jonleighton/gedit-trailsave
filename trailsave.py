@@ -58,7 +58,6 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
         """
 
         text = self.doc.get_text(self.doc.get_start_iter(), self.doc.get_end_iter(), False)
-        text = unicode(text, 'utf-8')
 
         start_iter = self.doc.get_start_iter()
         end_iter   = self.doc.get_start_iter()
