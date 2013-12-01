@@ -58,7 +58,8 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
         """
 
         text = self.doc.get_text(self.doc.get_start_iter(), self.doc.get_end_iter(), False)
-        text = unicode(text, 'utf-8')
+
+        compiledpattern = re.compile('.*?([ \t]+)$', flags=re.MULTILINE)
 
         start_iter = self.doc.get_start_iter()
         end_iter   = self.doc.get_start_iter()
@@ -66,7 +67,7 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
         line_no        = 0 # Last matched line no
         last_match_pos = 0 # Last matched position in the string
 
-        for match in re.finditer('.*?([ \t]+)$', text, flags=re.MULTILINE):
+        for match in re.finditer(compiledpattern, text):
             # Count the newlines since the last match
             line_no += text.count('\n', last_match_pos, match.start())
 
