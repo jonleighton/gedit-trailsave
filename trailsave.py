@@ -98,3 +98,5 @@ class SaveWithoutTrailingSpacePlugin(GObject.Object, Gedit.ViewActivatable):
                     itr.forward_to_line_end()
                     break
             self.doc.delete(itr, self.doc.get_end_iter())
+            self.doc.insert(self.doc.get_end_iter(), "\n") # Append a final newline
+
